@@ -16,6 +16,16 @@ public class DemoViewer {
         pane.add(headingSlider, BorderLayout.SOUTH);
 
         JSlider pitchSlider = new JSlider(JSlider.VERTICAL, -90, 90, 0);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu shapeMenu = new JMenu("Shape");
+        JMenuItem tetraItem = new JMenuItem("Tetrahedron");
+        JMenuItem sphereItem = new JMenuItem("Sphere");
+
+        shapeMenu.add(tetraItem);
+        shapeMenu.add(sphereItem);
+        menuBar.add(shapeMenu);
+
         pane.add(pitchSlider, BorderLayout.EAST);
 
         JPanel renderPanel = new JPanel(){
@@ -150,6 +160,7 @@ public class DemoViewer {
         pane.add(renderPanel, BorderLayout.CENTER);
 
 
+        frame.setJMenuBar(menuBar);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 500);
         frame.setVisible(true);
