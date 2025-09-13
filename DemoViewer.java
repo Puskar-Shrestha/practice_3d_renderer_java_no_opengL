@@ -25,7 +25,8 @@ public class DemoViewer {
         shapeMenu.add(tetraItem);
         shapeMenu.add(sphereItem);
         menuBar.add(shapeMenu);
-        
+        final int[] shapeChoice={0};
+
         pane.add(pitchSlider, BorderLayout.EAST);
 
         JPanel renderPanel = new JPanel(){
@@ -36,10 +37,15 @@ public class DemoViewer {
 
                 java.util.List tris = Shape.getTertahedron();
 
-
-                for(int i =0; i<4; i++){
-                    tris = StaticFunc.inflate(tris);
+                if(shapeChoice[0]==1){
+                    tris = Shape.getTertahedron();
                 }
+                else if(shapeChoice[0]==0){
+                    for(int i =0; i<4; i++){
+                        tris = StaticFunc.inflate(tris);
+                    }
+                }
+                
 
                 double heading = Math.toRadians(headingSlider.getValue());
                 Matrix3 headingtransform = new Matrix3(new double[]{
@@ -136,6 +142,14 @@ public class DemoViewer {
         };
         headingSlider.addChangeListener(e -> renderPanel.repaint());
         pitchSlider.addChangeListener(e -> renderPanel.repaint());
+        tetraItem.addActionListener(e -> {
+            shapeChoice[0] = 1;
+            renderPanel.repaint();
+        });
+        sphereItem.addActionListener(e -> {
+            shapeChoice[0] = 0;
+            renderPanel.repaint();
+        });
         
 
         pane.add(renderPanel, BorderLayout.CENTER);
