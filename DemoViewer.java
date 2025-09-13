@@ -1,9 +1,9 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
-import java.util.List;
 import javax.swing.*;
 import packages.prematives.*;
+import packages.shapeFunc.StaticFunc;
+import packages.shapes.Shape;
 
 public class DemoViewer {
     public static void main(String[] args){
@@ -25,7 +25,7 @@ public class DemoViewer {
         shapeMenu.add(tetraItem);
         shapeMenu.add(sphereItem);
         menuBar.add(shapeMenu);
-
+        
         pane.add(pitchSlider, BorderLayout.EAST);
 
         JPanel renderPanel = new JPanel(){
@@ -34,30 +34,11 @@ public class DemoViewer {
                 g2.setColor(Color.BLACK);
                 g2.fillRect(0, 0, getWidth(), getHeight());
 
-                java.util.List tris = new ArrayList<Triangle>();
-                tris.add(new Triangle(new Vertex(100, 100, 100),
-                                      new Vertex(-100, -100, 100),
-                                      new Vertex(-100, 100, -100),
-                                      Color.WHITE));
-
-                tris.add(new Triangle(new Vertex(100, 100, 100),
-                                      new Vertex(-100, -100, 100),
-                                      new Vertex(100, -100, -100),
-                                      Color.RED));
-
-                tris.add(new Triangle(new Vertex(-100, 100, -100),
-                                        new Vertex(100, -100, -100),
-                                        new Vertex(100, 100, 100),
-                                        Color.GREEN));
-
-                tris.add(new Triangle(new Vertex(-100, 100, -100),
-                                        new Vertex(100, -100, -100),
-                                        new Vertex(-100, -100, 100),
-                                        Color.BLUE));
+                java.util.List tris = Shape.getTertahedron();
 
 
                 for(int i =0; i<4; i++){
-                    tris = inflate(tris);
+                    tris = StaticFunc.inflate(tris);
                 }
 
                 double heading = Math.toRadians(headingSlider.getValue());
@@ -134,7 +115,7 @@ public class DemoViewer {
                                 double depth = b1 * v1.z + b2 * v2.z + b3 * v3.z;
                                 int zIndex = y * img.getWidth() + x;
                                 if(zBuffer[zIndex] < depth){
-                                    img.setRGB(x, y, getShade(t.color, angleCos).getRGB());
+                                    img.setRGB(x, y, StaticFunc.getShade(t.color, angleCos).getRGB());
                                     zBuffer[zIndex] = depth;
                                 }
                             }
@@ -163,45 +144,11 @@ public class DemoViewer {
         frame.setJMenuBar(menuBar);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 500);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
 
        
     }
 
-     public static Color getShade(Color color, double shade){
-        double redLinear = Math.pow(color.getRed(), 2.4)*shade;
-        double greenLinear = Math.pow(color.getGreen(), 2.4)*shade;
-        double blueLinear = Math.pow(color.getBlue(), 2.4)*shade;
-
-        int red = (int) Math.pow(redLinear, 1/2.4);
-        int green = (int) Math.pow(greenLinear, 1/2.4);
-        int blue = (int) Math.pow(blueLinear, 1/2.4);
-
-        return new Color(red,green,blue);
-    }
-
-    public static List inflate(List tris) {
-        java.util.List result = new ArrayList<>();
-        for (Triangle t : (java.util.List<Triangle>)tris) {
-            Vertex m1 =
-                new Vertex((t.v1.x + t.v2.x)/2, (t.v1.y + t.v2.y)/2, (t.v1.z + t.v2.z)/2);
-            Vertex m2 =
-                new Vertex((t.v2.x + t.v3.x)/2, (t.v2.y + t.v3.y)/2, (t.v2.z + t.v3.z)/2);
-            Vertex m3 =
-                new Vertex((t.v1.x + t.v3.x)/2, (t.v1.y + t.v3.y)/2, (t.v1.z + t.v3.z)/2);
-            result.add(new Triangle(t.v1, m1, m3, t.color));
-            result.add(new Triangle(t.v2, m1, m2, t.color));
-            result.add(new Triangle(t.v3, m2, m3, t.color));
-            result.add(new Triangle(m1, m2, m3, t.color));
-        }
-        for (Triangle t : (java.util.List<Triangle>)result) {
-            for (Vertex v : new Vertex[] { t.v1, t.v2, t.v3 }) {
-                double l = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z) / Math.sqrt(30000);
-                v.x /= l;
-                v.y /= l;
-                v.z /= l;
-            }
-        }
-        return result;
-    }
 }
