@@ -145,10 +145,14 @@ public class DemoViewer {
         tetraItem.addActionListener(e -> {
             shapeChoice[0] = 1;
             renderPanel.repaint();
+            headingSlider.setValue(0);
+            pitchSlider.setValue(0);
         });
         sphereItem.addActionListener(e -> {
             shapeChoice[0] = 0;
             renderPanel.repaint();
+            headingSlider.setValue(0);
+            pitchSlider.setValue(0);
         });
         
 
